@@ -14,7 +14,11 @@ You need install [Node](https://nodejs.org/es/) and Microsoft Visual C++ 2010 ("
 3. Open CMD, go to the folder and execute "node script_Download_YT_Bookmarks.js".
 
 # Result
-You will have each folder and videos you have in bookmarks.
+You will have all the folders and videos you have in bookmarks.
 
 # Notes
 The script will download 3 videos simultaneously.
+
+The file "downloaded.txt" will be created. It will have the URLs of the videos have been downloaded.
+
+The file "errs.txt" will be created. It will have errors that "youtube-dl" throws.
