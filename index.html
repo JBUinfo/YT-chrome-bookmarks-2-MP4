@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+    <head>
+        <title>Chrome Bookmarks Converter</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    </head>
+    <body>
+        <h2>Chrome Bookmarks HTML</h2>
+        <div>
+            <input type="file" id="bookmarksFile">
+            <button type="button" id="convertToJson" disabled>Convert to JSON</button>
+        </div>
+        <textarea id="input" rows="12" style="width: 100%;"></textarea>
+        <h2>JSON Result</h2>
+        <textarea id="output" rows="12" style="width: 100%;"></textarea>
+        <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+        <script type="text/javascript">
+        function ChromBookmarkConverter(){
+            this.bookmarks = {
+                folders: []
+            };
+
+            this.stripUnneededTags = function(html) {
+                html = html.replace(/<p>/gi, "");
+                html = html.replace(/<P>/gi, "");
+                html = html.replace(/<dt>/gi, "");
+                html = html.replace(/<DT>/gi, "");
+                return html;
+            }
+
+            this.processChromeBookmarksContent = function(html) {
+                let jHtml = $.parseHTML(this.stripUnneededTags(html));
+                jHtml.map( el => {
+                    if (el.tagName == "DL"){
+                        let currentFolder = {
+                            type: "folder",
+                            items: []
+                        };
+
+                        this.bookmarks.folders.push(currentFolder);
+                        this.processDL(el, 1, currentFolder);
+                    }
+                });
+            }
+
+            this.processDL = function(dl, parentCounter, parent) {
+                let parentThis = this;
+                let counter = 0;
+                let h3 = {};
+                let currentFolder = {
+                    type: "folder",
+                    title: "",
+                    add_date: "",
+                    last_modified: "",
+                    items: []
+                };
+                let link = {};
+                let dlElement = $(dl);
+                let h3_ready = false;   // When set to true, the last elements was a H3, so expecting the next to be a DL
+
+                $.each( dlElement.children(), function( i, el ) {
+                    counter = counter + 1;
+                    let currentID = parentCounter + "." + counter;
+                    if (h3_ready == true && el.tagName.toLowerCase() != "DL".toLowerCase()) {
+                        // Expecting a folder next but not found. Cancel the ready, and raise a warning.
+                        h3_ready = false;
+                        // Push the last heading, and continue normally.
+                        currentFolder.items.push(h3);
+                    }
+
+                    if (el.tagName.toLowerCase() == "DL".toLowerCase()) {
+                        currentFolder = {
+                            type: "folder",
+                            title: h3.title,
+                            add_date: h3.add_date,
+                            last_modified: h3.last_modified,
+                            items: []
+                        };
+                        if (h3_ready == true) {
+                            // Last elements was a heading. Add,it to the new sub-solder
+                            //currentFolder.items.push(h3);
+
+                            h3_ready = false;
+                        }
+                        parent.items.push(currentFolder);
+                        parentThis.processDL(el, currentID, currentFolder);
+                    }
+
+
+                    if (el.tagName.toLowerCase() == "H3".toLowerCase()) {
+                        // Title of a folder/sub-folder
+                        let h3Element = $(el);
+                        let h3Text = h3Element.text();
+                        let h3AddDate = h3Element.attr("add_date");
+                        let h3LastModified = h3Element.attr("last_modified");
+                        h3 = {
+                            type: "header",
+                            title: h3Text,
+                            add_date: h3AddDate,
+                            last_modified: h3LastModified
+                        };
+                        h3_ready = true;
+                        // If next child element is a DL, then it contains the the links in the "folder"
+                    }
+
+
+                    if (el.tagName.toLowerCase() == "a"){
+                        // Link
+                        let aElement = $(el);
+                        let aText = aElement.text();
+                        let aHref = aElement.attr("href");
+                        let aAddDate = aElement.attr("add_date");
+                        let aIcon = aElement.attr("icon");
+                        link = {
+                            type: "link",
+                            title: aText,
+                            href: aHref,
+                            add_date: aAddDate,
+                            icon: aIcon
+                        };
+                        parent.items.push(link);
+                    }
+                });
+            }
+        }
+
+        document.getElementById('convertToJson').addEventListener("click", ()=> {
+          let chromBookmarkConverter = new ChromBookmarkConverter();
+          let fileContents = document.getElementById("input").value;
+          chromBookmarkConverter.processChromeBookmarksContent(fileContents);
+          let bookmarksJson = JSON.stringify(chromBookmarkConverter.bookmarks);
+          document.getElementById("output").value = bookmarksJson;
+        })
+
+        document.getElementById('bookmarksFile').addEventListener("change", ()=> {
+          let selectedFile = document.getElementById('bookmarksFile').files[0];
+          if (selectedFile){
+              if (selectedFile.type != "text/html"){
+                  alert("Select file must be a HTML file");
+              } else {
+                let reader = new FileReader();
+                reader.onload = function (evt)
+                {
+                    document.getElementById("input").value = evt.target.result;
+                    document.getElementById("convertToJson").disabled = false;
+                };
+
+                reader.onerror = function (evt)
+                {
+                    console.error("An error ocurred reading the file",evt);
+                };
+
+                reader.readAsText(selectedFile, "UTF-8");
+              }
+          }
+        })
+
+        </script>
+    </body>
+</html>
