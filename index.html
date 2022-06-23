@@ -3,18 +3,10 @@
     <head>
         <title>Chrome Bookmarks Converter</title>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
     </head>
     <body>
         <h2>Chrome Bookmarks HTML</h2>
-        <div>
-            <input type="file" id="bookmarksFile">
-            <button type="button" id="convertToJson" disabled>Convert to JSON</button>
-        </div>
-        <textarea id="input" rows="12" style="width: 100%;"></textarea>
-        <h2>JSON Result</h2>
-        <textarea id="output" rows="12" style="width: 100%;"></textarea>
+        <input type="file" id="bookmarksFile">
         <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
         <script type="text/javascript">
         function ChromBookmarkConverter(){
@@ -126,14 +118,6 @@
             }
         }
 
-        document.getElementById('convertToJson').addEventListener("click", ()=> {
-          let chromBookmarkConverter = new ChromBookmarkConverter();
-          let fileContents = document.getElementById("input").value;
-          chromBookmarkConverter.processChromeBookmarksContent(fileContents);
-          let bookmarksJson = JSON.stringify(chromBookmarkConverter.bookmarks);
-          document.getElementById("output").value = bookmarksJson;
-        })
-
         document.getElementById('bookmarksFile').addEventListener("change", ()=> {
           let selectedFile = document.getElementById('bookmarksFile').files[0];
           if (selectedFile){
@@ -143,8 +127,12 @@
                 let reader = new FileReader();
                 reader.onload = function (evt)
                 {
-                    document.getElementById("input").value = evt.target.result;
-                    document.getElementById("convertToJson").disabled = false;
+                    let chromBookmarkConverter = new ChromBookmarkConverter();
+                    let fileContents = evt.target.result;
+                    chromBookmarkConverter.processChromeBookmarksContent(fileContents);
+                    let text = JSON.stringify(chromBookmarkConverter.bookmarks);
+                    let filename = "download.json";
+                    download(filename, text);
                 };
 
                 reader.onerror = function (evt)
@@ -156,6 +144,16 @@
               }
           }
         })
+
+        function download(filename, text) {
+          var element = document.createElement('a');
+          element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+          element.setAttribute('download', filename);
+          element.style.display = 'none';
+          document.body.appendChild(element);
+          element.click();
+          document.body.removeChild(element);
+        }
 
         </script>
     </body>
