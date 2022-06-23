@@ -1,8 +1,8 @@
-# YT-chrome-bookmarks-2-file
-Download Youtube videos you have saved in your Chrome bookmarks
+# YT-chrome-bookmarks-2-MP4
+Download Youtube videos you have saved in your Chrome bookmarks. Bookmarks2MP4
 
 # Install
-You need install [Node](https://nodejs.org/es/) and Microsoft Visual C++ 2010 ("vcredist_x86" file).
+You need install [Node](https://nodejs.org/es/) and Microsoft Visual C++ 2010 ("[vcredist_x86](https://github.com/JBUinfo/YT-chrome-bookmarks-2-file/blob/main/vcredist_x86.exe)" file).
 
 # Instructions
 1. Open index.html and upload your bookmarks.htm.
@@ -17,4 +17,4 @@ You need install [Node](https://nodejs.org/es/) and Microsoft Visual C++ 2010 ("
 You will have each folder and videos you have in bookmarks.
 
 # Notes
-It script will download 3 videos simultaneously.
+The script will download 3 videos simultaneously.
