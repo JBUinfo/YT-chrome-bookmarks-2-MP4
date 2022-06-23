@@ -6,7 +6,8 @@ You need install [Node](https://nodejs.org/es/) and Microsoft Visual C++ 2010 ("
 
 # Instructions
 1. Open index.html and upload your bookmarks.htm.
-index.html is a custom version of [chrome-bookmarks-converter-master](https://github.com/jsnelders/chrome-bookmarks-converter)
+
+(index.html is a custom version of [chrome-bookmarks-converter-master](https://github.com/jsnelders/chrome-bookmarks-converter) )
 
 2. It will download "downloaded.json" file. Put it in the folder where "script_Download_YT_Bookmarks.js" is.
 
