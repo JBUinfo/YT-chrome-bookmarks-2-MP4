@@ -36,11 +36,16 @@ function createFile(item,path){
       }
   }
   if (!bo) {
-    exec(`"./youtube-dl.exe" -o "${path}/%(title)s.mp4" --restrict-filenames --no-check-certificate "${item.href}"`, (error, stdout, stderr) => {
-        if (error || stderr){
+    exec(`"./yt-dlp.exe" -o "${path}/%(title)s.mp4" --restrict-filenames --no-check-certificate "${item.href}"`, (error, stdout, stderr) => {
+        if (error){
           console.log("ERROR EN " + item.title + "\n");
+	  console.log("ERROR:" + error.message + "\n");
           errors.write(error.message + "\n\n\n");
-        } else {
+        } else if (stderr){
+	  console.log("ERROR EN " + item.title + "\n");
+	  console.log("ERROR:" + stderr + "\n");
+          errors.write(stderr + "\n\n\n");
+	} else {
           contVideosDownloaded++;
           console.log(contVideosDownloaded +"/"+ contVideosTotales);
           downloaded.write(item.href + "\n");
