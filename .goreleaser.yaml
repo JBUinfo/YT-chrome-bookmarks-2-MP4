@@ -1,0 +1,43 @@
+# This is an example .goreleaser.yml file with some sensible defaults.
+# Make sure to check the documentation at https://goreleaser.com
+
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+
+version: 2
+
+project_name: ytcb2mp4
+
+builds:
+  - id: cross-build-linux-darwin
+    main: "ytcb2mp4.go"
+    binary: ytcb2mp4
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+
+  - id: cross-build-windows
+    main: "ytcb2mp4.go"
+    binary: ytcb2mp4
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+
+checksum:
+  name_template: "{{ .ProjectName }}_checksums.txt"
+
+source:
+  enabled: false
+
+release:
+  github:
+    owner: JBUinfo
+    name: YT-chrome-bookmarks-2-MP4
+
+archives:
+  - id: raw-binary
+    format: binary
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    wrap_in_directory: false
