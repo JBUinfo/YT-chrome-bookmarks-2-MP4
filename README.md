@@ -11,9 +11,7 @@ Download Youtube videos you have saved in your Chrome bookmarks. Bookmarks2MP4
 Download your version from [Releases](https://github.com/JBUinfo/YT-chrome-bookmarks-2-MP4/releases)
 
 # Instructions
-1. Open a terminal, go to the binary folder and execute:
-
-   `ytcb2mp4`
+1. Run the downloaded/built binary
 
 # Result
 You will have all the folders and videos you have in bookmarks.
