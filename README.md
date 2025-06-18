@@ -1,5 +1,5 @@
 # YT-chrome-bookmarks-2-MP4
-Download Youtube videos you have saved in your Chrome bookmarks. Bookmarks2MP4
+Download Youtube videos you have saved in your Google Chrome bookmarks
 
 # Build
 1. Install [Golang](https://go.dev/dl/)
